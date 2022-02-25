@@ -32,24 +32,28 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <div v-if="$page.props.flash.message">
+                            <input type="hidden" name="message-success" id="message-success" :value="$page.props.flash.message">
+                        </div>
                         <div class="row">
                             <div class="form-group col-lg-2">
-                                <a href="#" class="btn btn-primary btn-block">
+                                <Link href="/users/create" class="btn btn-primary btn-block">
                                     Tambah
-                                </a>
+                                </Link>
                             </div>
                             <div class="form-group col-lg-2">
-                                <a href="#" class="btn btn-success btn-block">Reset</a>
+                                <Link href="/users" class="btn btn-success btn-block">Reset</Link>
                             </div>
                             <div class="form-group col-lg-2">
-                                <select name="limit" id="limit" class="custom-select">
+                                <select v-model="length" @change="changeLength" name="limit" id="limit" class="custom-select">
+                                    <option value="2">2</option>
                                     <option value="10">10</option>
                                     <option value="25">25</option>
                                     <option value="50">50</option>
                                 </select>
                             </div>
                             <div class="form-group col-lg-6">
-                                <input type="text" name="searchKey" id="searchKey" class="form-control" placeholder="Cari data by name ..."/>
+                                <input v-model="search" @keyup="searchData" type="text" name="search" id="search" class="form-control" placeholder="Cari data by name ..."/>
                             </div>
                         </div>
                         <div>
@@ -83,9 +87,10 @@
                                             <img v-else src="/storage/images/woman.png" alt="" class="img-circle elevation-2" width="40">
                                         </td>
                                         <td>
-                                            <span v-if="user.roles">
+                                            <span v-if="user.roles.length">
                                                 {{ user.roles[0].name }}
                                             </span>
+                                            <span v-else>-</span>
                                         </td>
                                         <td>
                                             <span v-if="user.status == 1" class="badge px-2 py-1 badge-pill badge-warning text-white">
@@ -104,7 +109,7 @@
                                                     <i class="fa fa-edit" aria-hidden="true"></i>
                                                 </span>
                                             </Link>
-                                            <Link href="#" title="Delete">
+                                            <Link @click.prevent="delUser(user.id)" href="#" title="Delete">
                                                 <span class="text-danger">
                                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                                 </span>
@@ -137,12 +142,66 @@
             Link,
             Pagination
         },
+
         props: {
             users: Object,
         },
-        created: function () {
+
+        data() {
+            return {
+                length: 10,
+                search: ''
+            }
+        },
+
+        created() {
             this.moment = moment
         },
+
+        mounted() {
+            if ($('#message-success').val()) {
+                Swal.fire(
+                    'Success',
+                    `${$('#message-success').val()}`,
+                    'success'
+                )
+            }
+        },
+
+        methods: {
+            changeLength() {
+                this.$inertia.get('/users', {length: this.length}, {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true
+                })
+            },
+
+            searchData() {
+                this.$inertia.get('/users', {search: this.search}, {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true
+                })
+            },
+
+            delUser(id) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.$inertia.delete(`/users/${id}`)
+                    }
+                })
+            }
+        }
     }
 </script>
 

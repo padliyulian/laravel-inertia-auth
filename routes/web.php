@@ -39,6 +39,11 @@ Route::group(
         'name' => 'users.'
     ],
     function() {
-        Route::get('/', [\App\Http\Controllers\UserController::class, 'index']);
+        Route::get('/', [\App\Http\Controllers\UserController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\UserController::class, 'create']);
+        Route::post('/', [\App\Http\Controllers\UserController::class, 'store']);
+        Route::get('/edit/{id}', [\App\Http\Controllers\UserController::class, 'edit']);
+        Route::patch('/{id}', [\App\Http\Controllers\UserController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\UserController::class, 'destroy']);
     }
 );
