@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/auth/login');
 });
+
+Route::get('/auth/login', [\App\Http\Controllers\AuthController::class, 'getLogin']);
 
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index']);
 
@@ -39,7 +41,7 @@ Route::group(
         'name' => 'users.'
     ],
     function() {
-        Route::get('/', [\App\Http\Controllers\UserController::class, 'index'])->name('index');
+        Route::get('/', [\App\Http\Controllers\UserController::class, 'index']);
         Route::get('/create', [\App\Http\Controllers\UserController::class, 'create']);
         Route::post('/', [\App\Http\Controllers\UserController::class, 'store']);
         Route::get('/edit/{id}', [\App\Http\Controllers\UserController::class, 'edit']);
