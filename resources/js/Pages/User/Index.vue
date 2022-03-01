@@ -45,7 +45,7 @@
                                 <Link href="/users" class="btn btn-success btn-block">Reset</Link>
                             </div>
                             <div class="form-group col-lg-2">
-                                <select v-model="length" @change="changeLength" name="limit" id="limit" class="custom-select">
+                                <select v-model="q.limit" @change="changeLength" name="limit" id="limit" class="custom-select">
                                     <option value="2">2</option>
                                     <option value="10">10</option>
                                     <option value="25">25</option>
@@ -53,25 +53,25 @@
                                 </select>
                             </div>
                             <div class="form-group col-lg-6">
-                                <input v-model="search" @keyup="searchData" type="text" name="search" id="search" class="form-control" placeholder="Cari data by name ..."/>
+                                <input v-model="q.search" @keyup="searchData" type="text" name="search" id="search" class="form-control" placeholder="Cari data by name ..."/>
                             </div>
                         </div>
                         <div>
                             <table class="table table-striped table-responsive-lg">
                                 <thead>
                                     <tr>
-                                        <th class="c--pointer">
+                                        <th @click="changeDir('name')" class="c--pointer">
                                             <i class="fas fa-sort"></i>
                                             Name
                                         </th>
-                                        <th class="c--pointer">
+                                        <th @click="changeDir('email')" class="c--pointer">
                                             <i class="fas fa-sort"></i>
                                             Email
                                         </th>
                                         <th>Photo</th>
                                         <th>Role</th>
                                         <th>Status</th>
-                                        <th class="c--pointer">
+                                        <th @click="changeDir('created_at')" class="c--pointer">
                                             <i class="fas fa-sort"></i>
                                             Created
                                         </th>
@@ -118,7 +118,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <Pagination :data="users" />
+                            <Pagination :data="users" :q="this.q" />
                         </div>
                     </div>
                     <div class="card-footer">
@@ -144,18 +144,30 @@
         },
 
         props: {
+            column: String,
+            dir: String,
+            search: String,
+            length: Number,
             users: Object,
         },
 
         data() {
             return {
-                length: 10,
-                search: ''
+                q: {
+                    limit: 10,
+                    column: '',
+                    dir: '',
+                    search: ''
+                }
             }
         },
 
         created() {
             this.moment = moment
+            this.q.limit = this.length
+            this.q.column = this.column
+            this.q.dir = this.dir
+            this.q.search = this.search
         },
 
         mounted() {
@@ -169,20 +181,43 @@
         },
 
         methods: {
+            changeDir(val) {
+                this.q.column = val
+                this.reverseSort()
+                this.getData()
+            },
+
             changeLength() {
-                this.$inertia.get('/users', {length: this.length}, {
-                    preserveState: true,
-                    preserveScroll: true,
-                    replace: true
-                })
+                this.getData()
             },
 
             searchData() {
-                this.$inertia.get('/users', {search: this.search}, {
-                    preserveState: true,
-                    preserveScroll: true,
-                    replace: true
-                })
+                this.getData()
+            },
+
+            reverseSort()
+            {
+                if (this.q.dir === 'asc') {
+                    this.q.dir = 'desc'
+                } else {
+                    this.q.dir = 'asc'
+                }
+            },
+
+            getData() {
+                this.$inertia.get('/users',
+                    {
+                        length: this.q.limit,
+                        column: this.q.column,
+                        dir: this.q.dir,
+                        search: this.q.search
+                    },
+                    {
+                        preserveState: true,
+                        preserveScroll: true,
+                        replace: true
+                    }
+                )
             },
 
             delUser(id) {

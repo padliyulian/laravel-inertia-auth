@@ -49,6 +49,10 @@ class UserController extends Controller
 
         Inertia::setRootView('layouts.dashboard');
         return Inertia::render('User/Index', [
+            'length' => (int)$length,
+            'column' => $column,
+            'dir' => $dir,
+            'search' => $search,
             'users' => $users
         ]);
     }

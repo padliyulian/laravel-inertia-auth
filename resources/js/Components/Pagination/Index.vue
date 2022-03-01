@@ -7,7 +7,7 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                     <li v-if="data.current_page != 1" class="page-item">
-                        <Link class="page-link" :href="data.first_page_url">
+                        <Link class="page-link" :href="`${data.first_page_url}&length=${q.limit}&column=${q.column}&dir=${q.dir}&search=${q.search}`">
                             First
                         </Link>
                     </li>
@@ -22,7 +22,7 @@
                         </Link>
                     </li>
                     <li v-else class="page-item">
-                        <Link class="page-link" :href="data.prev_page_url" aria-label="Previous">
+                        <Link class="page-link" :href="`${data.prev_page_url}&length=${q.limit}&column=${q.column}&dir=${q.dir}&search=${q.search}`" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </Link>
                     </li>
@@ -37,12 +37,12 @@
                         </Link>
                     </li>
                     <li v-else class="page-item">
-                        <Link class="page-link" :href="data.next_page_url" aria-label="Next">
+                        <Link class="page-link" :href="`${data.next_page_url}&length=${q.limit}&column=${q.column}&dir=${q.dir}&search=${q.search}`" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </Link>
                     </li>
                     <li v-if="data.current_page != data.last_page" class="page-item">
-                        <Link class="page-link" :href="data.last_page_url">
+                        <Link class="page-link" :href="`${data.last_page_url}&length=${q.limit}&column=${q.column}&dir=${q.dir}&search=${q.search}`">
                             Last
                         </Link>
                     </li>
@@ -66,6 +66,7 @@
         },
         props: {
             data: Object,
+            q: Object
         }
     }
 </script>
