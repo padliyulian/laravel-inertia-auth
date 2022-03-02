@@ -253,12 +253,12 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <Link @click.prevent="logout" class="nav-link" href="#">
                                 <i class="nav-icon fas fa-power-off"></i>
                                 <p>
                                     Logout
                                 </p>
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </nav>
@@ -291,6 +291,20 @@ import { Link } from '@inertiajs/inertia-vue3'
 export default {
     components: {
         Link,
-    }
+    },
+
+    created() {
+        document.body.classList.remove('login-page')
+
+        document.body.classList.add('hold-transition')
+        document.body.classList.add('sidebar-mini')
+        document.body.classList.add('layout-fixed')
+    },
+
+    methods: {
+        logout() {
+            this.$inertia.post('/logout')
+        },
+    },
 }
 </script>

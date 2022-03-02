@@ -6,23 +6,32 @@
                 <a href="#" class="h1"><b>Admin</b>LTE</a>
             </div>
             <div class="card-body">
+                <div v-if="$page.props.flash.error">
+                    <input type="hidden" name="message-error" id="message-error" :value="$page.props.flash.error">
+                </div>
                 <p class="login-box-msg">Sign in to start your session</p>
-                <form method="POST" action="">
+                <form @submit.prevent="login" method="POST" action="">
                     <div class="input-group mb-3">
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Email"/>
+                        <input v-model="form.email" type="text" id="email" name="email" class="form-control" :class="{ 'is-invalid':errors.email}" placeholder="Email"/>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
+                        <span v-if="errors.email" class="invalid-feedback" role="alert">
+                            <strong>{{ errors.email }}</strong>
+                        </span>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
+                        <input v-model="form.password" type="password" id="password" name="password" class="form-control" :class="{ 'is-invalid':errors.password}" placeholder="Password"/>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
+                        <span v-if="errors.password" class="invalid-feedback" role="alert">
+                            <strong>{{ errors.password }}</strong>
+                        </span>
                     </div>
                     <div class="row">
                         <div class="col-8">
@@ -48,12 +57,12 @@
                 </div>
 
                 <p class="mb-1">
-                    <a href="/auth/forgot">
+                    <a href="/forgot">
                         I forgot my password
                     </a>
                 </p>
                 <p class="mb-0">
-                    <a href="/auth/register" class="text-center">
+                    <a href="/register" class="text-center">
                         Register a new membership
                     </a>
                 </p>
@@ -69,8 +78,47 @@
         components: {
             Head
         },
-        props: {
 
+        props: {
+            errors: Object
         },
+
+        data() {
+            return {
+                form: {
+                    email: '',
+                    password: ''
+                }
+            }
+        },
+
+        created() {
+            document.body.classList.remove('sidebar-mini')
+            document.body.classList.remove('layout-fixed')
+
+            document.body.classList.add('hold-transition')
+            document.body.classList.add('login-page')
+        },
+
+        methods: {
+            login() {
+                this.$inertia.post('/login', this.form)
+                this.cekError()
+            },
+
+            cekError() {
+                setTimeout(() => {
+                    if ($('#message-error').val()) {
+                        Swal.fire(
+                            'Error',
+                            `${$('#message-error').val()}`,
+                            'error'
+                        )
+                        this.form.email = ''
+                        this.form.password = ''
+                    }
+                }, 1000)
+            }
+        }
     }
 </script>

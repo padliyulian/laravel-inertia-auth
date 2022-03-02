@@ -27,8 +27,10 @@
         rel="stylesheet"
         href="{{asset('/assets/vendor/adminlte/adminlte.min.css')}}"
     >
+
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet" />
     <script src="{{ mix('/js/app.js') }}" defer></script>
+
     @inertiaHead
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
