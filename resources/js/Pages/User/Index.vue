@@ -233,6 +233,15 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.$inertia.delete(`/users/${id}`)
+                        setTimeout(() => {
+                            if ($('#message-success').val()) {
+                                Swal.fire(
+                                    'Success',
+                                    `${$('#message-success').val()}`,
+                                    'success'
+                                )
+                            }
+                        }, 1000)
                     }
                 })
             }

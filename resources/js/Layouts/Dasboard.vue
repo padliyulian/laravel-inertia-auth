@@ -100,11 +100,13 @@
             <div class="sidebar">
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="/assets/images/woman.png" class="img-circle elevation-2" alt="avatar"/>
+                        <img v-if="$page.props.auth.user.photo" :src="`/storage/images/${$page.props.auth.user.photo}`" class="img-circle elevation-2" alt="avatar"/>
+                        <img v-else src="/assets/images/woman.png" class="img-circle elevation-2" alt="avatar"/>
                     </div>
                     <div class="info">
                         <a href="#" class="d-block">
-                            username
+                            <span v-if="$page.props.auth.user.name">{{ $page.props.auth.user.name }}</span>
+                            <span v-else>username</span>
                         </a>
                     </div>
                 </div>
@@ -211,7 +213,7 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item has-treeview">
+                        <li v-if="$page.props.auth.user.roles[0].name === 'admin'" class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
@@ -230,10 +232,10 @@
                                     </a>
                                     <ul class="nav nav-treeview">
                                         <li class="nav-item">
-                                            <a href="#" class="nav-link">
+                                            <Link href="/roles" class="nav-link">
                                                 <i class="fas fa-user-shield nav-icon"></i>
                                                 <p>Roles</p>
-                                            </a>
+                                            </Link>
                                         </li>
                                         <li class="nav-item">
                                             <a href="#" class="nav-link">
@@ -292,6 +294,10 @@ export default {
     components: {
         Link,
     },
+
+    // props: {
+    //     user: Object
+    // },
 
     created() {
         document.body.classList.remove('login-page')

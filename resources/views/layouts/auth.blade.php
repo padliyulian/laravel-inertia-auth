@@ -27,6 +27,7 @@
         rel="stylesheet"
         href="{{asset('/assets/vendor/adminlte/adminlte.min.css')}}"
     >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
 
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet" />
     <script src="{{ mix('/js/app.js') }}" defer></script>

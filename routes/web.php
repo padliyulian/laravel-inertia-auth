@@ -13,32 +13,42 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect('/login');
+Route::group(['middleware' => 'guest'], function() {
+    Route::get('/', function () {
+        return redirect('/login');
+    });
+    Route::get('/login', [\App\Http\Controllers\AuthController::class, 'getLogin'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\AuthController::class, 'postLogin']);
 });
 
-Route::get('/login', [\App\Http\Controllers\AuthController::class, 'getLogin'])->name('login');
-Route::post('/login', [\App\Http\Controllers\AuthController::class, 'postLogin']);
-Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'postLogout']);
-
 Route::group(['middleware' => 'auth'], function() {
+    Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'postLogout']);
+
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index']);
 
     Route::group(
         [
-            // 'middleware' => 'role:admin',
+            'middleware' => 'role:admin',
             // 'namespace' => 'Diskusi',
             'prefix' => 'roles',
             'name' => 'roles.'
         ],
         function() {
             Route::get('/', [\App\Http\Controllers\RoleController::class, 'index']);
+            Route::get('/create', [\App\Http\Controllers\RoleController::class, 'create']);
+            Route::post('/', [\App\Http\Controllers\RoleController::class, 'store']);
+            Route::get('/edit/{id}', [\App\Http\Controllers\RoleController::class, 'edit']);
+            Route::patch('/{id}', [\App\Http\Controllers\RoleController::class, 'update']);
+            Route::delete('/{id}', [\App\Http\Controllers\RoleController::class, 'destroy']);
+
+            Route::get('/permissions/{id}', [\App\Http\Controllers\RoleController::class, 'getPermission']);
+            Route::patch('/permissions/{id}', [\App\Http\Controllers\RoleController::class, 'updatePermission']);
         }
     );
 
     Route::group(
         [
-            // 'middleware' => 'role:admin',
+            'middleware' => 'role:admin',
             // 'namespace' => 'Diskusi',
             'prefix' => 'users',
             'name' => 'users.'
