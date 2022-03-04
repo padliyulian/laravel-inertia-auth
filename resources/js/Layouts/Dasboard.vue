@@ -114,7 +114,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item">
-                            <Link href="/dashboard" class="nav-link">
+                            <Link @click="handleClickMenu" href="/dashboard" class="nav-link" :class="{ 'active':$page.props.currentMenu1 === 'dashboard'}">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </Link>
@@ -213,7 +213,7 @@
                             </ul>
                         </li>
 
-                        <li v-if="$page.props.auth.user.roles[0].name === 'admin'" class="nav-item has-treeview">
+                        <li v-if="$page.props.auth.user.roles[0].name === 'admin'" class="nav-item has-treeview" :class="{ 'menu-open':$page.props.currentMenu1 === 'settings'}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
@@ -222,7 +222,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item has-treeview">
+                                <li class="nav-item has-treeview" :class="{ 'menu-open':$page.props.currentMenu2 === 'auth'}">
                                     <a href="#" class="nav-link">
                                         <i class="fas fa-users-cog nav-icon"></i>
                                         <p>
@@ -232,19 +232,19 @@
                                     </a>
                                     <ul class="nav nav-treeview">
                                         <li class="nav-item">
-                                            <Link href="/roles" class="nav-link">
+                                            <Link @click="handleClickMenu" href="/roles" class="nav-link" :class="{ 'active':$page.props.currentMenu3 === 'roles'}">
                                                 <i class="fas fa-user-shield nav-icon"></i>
                                                 <p>Roles</p>
                                             </Link>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="#" class="nav-link">
+                                            <Link @click="handleClickMenu" href="/permissions" class="nav-link" :class="{ 'active':$page.props.currentMenu3 === 'permissions'}">
                                                 <i class="fas fa-user-cog nav-icon"></i>
                                                 <p>Permissions</p>
-                                            </a>
+                                            </Link>
                                         </li>
                                         <li class="nav-item ">
-                                            <Link href="/users" class="nav-link">
+                                            <Link @click="handleClickMenu" href="/users" class="nav-link" :class="{ 'active':$page.props.currentMenu3 === 'users'}">
                                                 <i class="fas fa-users nav-icon"></i>
                                                 <p>Users</p>
                                             </Link>
@@ -295,10 +295,6 @@ export default {
         Link,
     },
 
-    // props: {
-    //     user: Object
-    // },
-
     created() {
         document.body.classList.remove('login-page')
 
@@ -308,9 +304,13 @@ export default {
     },
 
     methods: {
+        handleClickMenu() {
+            document.body.classList.remove('sidebar-open')
+        },
+
         logout() {
             this.$inertia.post('/logout')
-        },
+        }
     },
 }
 </script>

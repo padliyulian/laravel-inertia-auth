@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->data['currentMenu1'] = 'settings';
+        $this->data['currentMenu2'] = 'auth';
+        $this->data['currentMenu3'] = 'users';
+    }
+
     public function index(Request $request)
     {
         if ($request->has('length') && $request->input('length') != '') {
@@ -47,24 +54,22 @@ class UserController extends Controller
 
         $users = $query->paginate($length);
 
+        $this->data['length'] = (int)$length;
+        $this->data['column'] = $column;
+        $this->data['dir'] = $dir;
+        $this->data['search'] = $search;
+        $this->data['users'] = $users;
+
         Inertia::setRootView('layouts.dashboard');
-        return Inertia::render('User/Index', [
-            'length' => (int)$length,
-            'column' => $column,
-            'dir' => $dir,
-            'search' => $search,
-            'users' => $users
-        ]);
+        return Inertia::render('User/Index', $this->data);
     }
 
     public function create()
     {
-        $roles =  Role::select('id','name')->get();
+        $this->data['roles'] =  Role::select('id','name')->get();
         Inertia::setRootView('layouts.dashboard');
 
-        return Inertia::render('User/Create', [
-            'roles' => $roles
-        ]);
+        return Inertia::render('User/Create', $this->data);
     }
 
     public function store(Request $request)
@@ -106,14 +111,11 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $user = User::with('roles')->findOrFail($id);
-        $roles =  Role::select('id','name')->get();
+        $this->data['user'] = User::with('roles')->findOrFail($id);
+        $this->data['roles'] =  Role::select('id','name')->get();
         Inertia::setRootView('layouts.dashboard');
 
-        return Inertia::render('User/Edit', [
-            'roles' => $roles,
-            'user' => $user
-        ]);
+        return Inertia::render('User/Edit', $this->data);
     }
 
     public function update(Request $request, $id)

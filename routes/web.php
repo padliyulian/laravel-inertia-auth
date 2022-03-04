@@ -49,6 +49,22 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(
         [
             'middleware' => 'role:admin',
+            'prefix' => 'permissions',
+            'name' => 'permissions.'
+        ],
+        function() {
+            Route::get('/', [\App\Http\Controllers\PermissionController::class, 'index']);
+            Route::get('/create', [\App\Http\Controllers\PermissionController::class, 'create']);
+            Route::post('/', [\App\Http\Controllers\PermissionController::class, 'store']);
+            Route::get('/edit/{id}', [\App\Http\Controllers\PermissionController::class, 'edit']);
+            Route::patch('/{id}', [\App\Http\Controllers\PermissionController::class, 'update']);
+            Route::delete('/{id}', [\App\Http\Controllers\PermissionController::class, 'destroy']);
+        }
+    );
+
+    Route::group(
+        [
+            'middleware' => 'role:admin',
             // 'namespace' => 'Diskusi',
             'prefix' => 'users',
             'name' => 'users.'

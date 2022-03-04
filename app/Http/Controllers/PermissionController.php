@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use Inertia\Inertia;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 
-class RoleController extends Controller
+class PermissionController extends Controller
 {
     public function __construct()
     {
         $this->data['currentMenu1'] = 'settings';
         $this->data['currentMenu2'] = 'auth';
-        $this->data['currentMenu3'] = 'roles';
+        $this->data['currentMenu3'] = 'permissions';
     }
 
     public function index(Request $request)
@@ -42,7 +41,7 @@ class RoleController extends Controller
             $search = '';
         }
 
-        $query = Role::orderBy($column, $dir);
+        $query = Permission::orderBy($column, $dir);
 
         if ($search) {
             $query->where(function($query) use ($search) {
@@ -51,95 +50,72 @@ class RoleController extends Controller
             });
         }
 
-        $roles = $query->paginate($length);
+        $permissions = $query->paginate($length);
 
         $this->data['length'] = (int)$length;
         $this->data['column'] = $column;
         $this->data['dir'] = $dir;
         $this->data['search'] = $search;
-        $this->data['roles'] = $roles;
+        $this->data['permissions'] = $permissions;
 
         Inertia::setRootView('layouts.dashboard');
-        return Inertia::render('Role/Index', $this->data);
+        return Inertia::render('Permission/Index', $this->data);
     }
 
     public function create()
     {
         Inertia::setRootView('layouts.dashboard');
-        return Inertia::render('Role/Create', $this->data);
+        return Inertia::render('Permission/Create', $this->data);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:100|unique:roles,name',
+            'name' => 'required|max:100|unique:permissions,name',
             'guardName' => 'required|max:100',
         ]);
 
-        $role = new Role;
-        $role->name = $request->name;
-        $role->guard_name = $request->guardName;
+        $permission = new Permission;
+        $permission->name = $request->name;
+        $permission->guard_name = $request->guardName;
 
-        if ($role->save()) {
+        if ($permission->save()) {
             session()->flash('message', 'Add data successfully.');
-            return redirect('/roles');
+            return redirect('/permissions');
         }
     }
 
     public function edit($id)
     {
-        $this->data['role'] = Role::findOrFail($id);
+        $this->data['permission'] = Permission::findOrFail($id);
         Inertia::setRootView('layouts.dashboard');
 
-        return Inertia::render('Role/Edit', $this->data);
+        return Inertia::render('Permission/Edit', $this->data);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|max:100|unique:roles,name,'.$id,
+            'name' => 'required|max:100|unique:permissions,name,'.$id,
             'guardName' => 'required|max:100',
         ]);
 
-        $role = Role::findOrFail($id);
-        $role->name = $request->name;
-        $role->guard_name = $request->guardName;
+        $permission = Permission::findOrFail($id);
+        $permission->name = $request->name;
+        $permission->guard_name = $request->guardName;
 
-        if ($role->update()) {
+        if ($permission->update()) {
             session()->flash('message', 'Update data successfully.');
-            return redirect('/roles');
+            return redirect('/permissions');
         }
     }
 
     public function destroy($id)
     {
-        $role = Role::findOrFail($id);
-        if ($role->delete()) {
+        $permission = Permission::findOrFail($id);
+        if ($permission->delete()) {
             session()->flash('message', 'Delete data successfully.');
-            return redirect('/roles');
+            return redirect('/permissions');
         }
-    }
-
-    public function getPermission($id)
-    {
-        $this->data['role'] = Role::with('permissions')->findOrFail($id);
-        $this->data['permissions'] = Permission::select('id','name')->get();
-        Inertia::setRootView('layouts.dashboard');
-
-        return Inertia::render('Role/Permission', $this->data);
-    }
-
-    public function updatePermission(Request $request, $id)
-    {
-        $role = Role::findOrFail($id);
-
-        if ($role->name === 'admin') {
-            $role->syncPermissions(Permission::all());
-        } else {
-            $role->syncPermissions($request->permissions);
-        }
-
-        session()->flash('message', 'Update permission successfully.');
-        return redirect('/roles');
     }
 }
