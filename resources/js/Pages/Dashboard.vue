@@ -55,8 +55,9 @@
             Layout,
             Head
         },
+
         props: {
 
-        },
+        }
     }
 </script>

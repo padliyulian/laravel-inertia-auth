@@ -98,6 +98,7 @@
 
             document.body.classList.add('hold-transition')
             document.body.classList.add('login-page')
+            document.body.setAttribute('style', 'min-height: 466px;')
         },
 
         methods: {
@@ -114,6 +115,8 @@
                             `${$('#message-error').val()}`,
                             'error'
                         )
+
+                        document.body.classList.remove('swal2-height-auto')
                         this.form.email = ''
                         this.form.password = ''
                     }

@@ -20248,16 +20248,23 @@ __webpack_require__.r(__webpack_exports__);
     Link: _inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_0__.Link
   },
   created: function created() {
-    document.body.classList.remove('login-page');
-    document.body.classList.add('hold-transition');
+    document.body.classList.remove('login-page'); // document.body.classList.add('hold-transition')
+
     document.body.classList.add('sidebar-mini');
     document.body.classList.add('layout-fixed');
+  },
+  mounted: function mounted() {
+    if (!localStorage.getItem('reload')) {
+      localStorage['reload'] = true;
+      window.location.reload();
+    }
   },
   methods: {
     handleClickMenu: function handleClickMenu() {
       document.body.classList.remove('sidebar-open');
     },
     logout: function logout() {
+      localStorage.removeItem('reload');
       this.$inertia.post('/logout');
     }
   }
@@ -20298,6 +20305,7 @@ __webpack_require__.r(__webpack_exports__);
     document.body.classList.remove('layout-fixed');
     document.body.classList.add('hold-transition');
     document.body.classList.add('login-page');
+    document.body.setAttribute('style', 'min-height: 466px;');
   },
   methods: {
     login: function login() {
@@ -20310,6 +20318,7 @@ __webpack_require__.r(__webpack_exports__);
       setTimeout(function () {
         if ($('#message-error').val()) {
           Swal.fire('Error', "".concat($('#message-error').val()), 'error');
+          document.body.classList.remove('swal2-height-auto');
           _this.form.email = '';
           _this.form.password = '';
         }

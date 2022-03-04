@@ -298,9 +298,16 @@ export default {
     created() {
         document.body.classList.remove('login-page')
 
-        document.body.classList.add('hold-transition')
+        // document.body.classList.add('hold-transition')
         document.body.classList.add('sidebar-mini')
         document.body.classList.add('layout-fixed')
+    },
+
+    mounted() {
+        if (!localStorage.getItem('reload')) {
+            localStorage['reload'] = true
+            window.location.reload()
+        }
     },
 
     methods: {
@@ -309,6 +316,7 @@ export default {
         },
 
         logout() {
+            localStorage.removeItem('reload')
             this.$inertia.post('/logout')
         }
     },
