@@ -14,3 +14,10 @@
 
 # user & password
 - admin@mail.com
+
+# User, Role & Permission
+![login screen](https://github.com/padliyulian/laravel-inertia-auth/blob/master/public/assets/images/login.png)
+![login screen](https://github.com/padliyulian/laravel-inertia-auth/blob/master/public/assets/images/role.png)
+![login screen](https://github.com/padliyulian/laravel-inertia-auth/blob/master/public/assets/images/role-permission.png)
+![login screen](https://github.com/padliyulian/laravel-inertia-auth/blob/master/public/assets/images/permission.png)
+![login screen](https://github.com/padliyulian/laravel-inertia-auth/blob/master/public/assets/images/user.png)
